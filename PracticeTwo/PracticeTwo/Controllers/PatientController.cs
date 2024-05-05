@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PracticeTwo.BusinessLogic.Managers;
+using PracticeTwo.BusinessLogic.Models;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +11,46 @@ namespace PracticeTwo.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
+        private PatientManager _patientManager;
+
+        public PatientController(PatientManager patientManagerr)
+        {
+            _patientManager = patientManagerr;
+        }
+
         // GET: api/<PatientController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Patient> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _patientManager.GetPatients();
         }
 
         // GET api/<PatientController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{CI}")]
+        public Patient Get(int CI)
         {
-            return "value";
+            return _patientManager.GetPatientByCI(CI);
         }
 
         // POST api/<PatientController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post(string name, string lastname, int CI)
         {
+            _patientManager.AddPatient(name, lastname, CI);
         }
 
         // PUT api/<PatientController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{CI}")]
+        public void Put(int CI, string name, string lastname)
         {
+            _patientManager.UpdatePatientByCI(CI, name, lastname);
         }
 
         // DELETE api/<PatientController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{CI}")]
+        public void Delete(int CI)
         {
+            _patientManager.DeletePatientByCI(CI);
         }
     }
 }
