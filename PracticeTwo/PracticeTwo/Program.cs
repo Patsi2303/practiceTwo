@@ -21,6 +21,29 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("C://Users//Alejandro//Documents//2024 - I//Certificacion I//PruebasGit//practiceTwo//PracticeTwo////DevelopmentLog-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    Log.Information("Working on Development Environment");
+    Console.WriteLine("Estamos en devolopment");
+}
+
+if (app.Environment.EnvironmentName == "QA") 
+{
+    Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("C://Users//Alejandro//Documents//2024 - I//Certificacion I//PruebasGit//practiceTwo//PracticeTwo////QALog-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    Log.Information("Working on QA Environment");
+    Console.WriteLine("Estamos en QA");
+}
+
+if (app.Environment.EnvironmentName == "UAT") 
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
