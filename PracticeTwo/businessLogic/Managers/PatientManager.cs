@@ -1,4 +1,5 @@
 ﻿using PracticeTwo.BusinessLogic.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,17 @@ namespace PracticeTwo.BusinessLogic.Managers
 
         public void AddPatient(string name, string lastname, int ci)
         {
-            _patients.Add(new Patient(name, lastname, ci));
+            try
+            {
+                _patients.Add(new Patient(name, lastname, ci));
+            }
+            catch(Exception ex)  
+            {
+                Log.Error($"AddPatient Method Error: {ex.Message}");
+                Log.Error($"AddPatient StackTrace: {ex.StackTrace}");
+
+                throw ex;
+            }
         }
 
         public void UpdatePatientByCI(int ci, string newName, string newLastname)
@@ -33,7 +44,8 @@ namespace PracticeTwo.BusinessLogic.Managers
             }
             else
             {
-                throw new InvalidOperationException("Patient not found");
+                Log.Error("UpdatePatientByCI Method Error: Patient not found");
+                throw new KeyNotFoundException("Patient not found");
             }
         }
 
@@ -46,7 +58,8 @@ namespace PracticeTwo.BusinessLogic.Managers
             }
             else
             {
-                throw new InvalidOperationException("Patient not found");
+                Log.Error("DeletePatientByCI Method Error: Patient not Found");
+                throw new KeyNotFoundException("Patient not found");
             }
         }
 

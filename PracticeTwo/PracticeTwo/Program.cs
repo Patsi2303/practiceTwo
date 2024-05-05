@@ -1,6 +1,7 @@
 using Serilog;
 using PracticeTwo.BusinessLogic.Managers;
 using Microsoft.OpenApi.Models;
+using PracticeTwo.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandlerMiddleware();
+
 if (app.Environment.IsDevelopment())
 {
     Log.Logger = new LoggerConfiguration()
@@ -28,7 +31,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     Log.Information("Working on Development Environment");
-    Console.WriteLine("Estamos en devolopment");
 }
 
 if (app.Environment.EnvironmentName == "QA") 
@@ -39,7 +41,6 @@ if (app.Environment.EnvironmentName == "QA")
     app.UseSwagger();
     app.UseSwaggerUI();
     Log.Information("Working on QA Environment");
-    Console.WriteLine("Estamos en QA");
 }
 
 if (app.Environment.EnvironmentName == "UAT") 
@@ -47,10 +48,6 @@ if (app.Environment.EnvironmentName == "UAT")
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
