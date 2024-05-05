@@ -12,22 +12,32 @@ namespace PracticeTwo.Controllers
     public class PatientController : ControllerBase
     {
         private PatientManager _patientManager;
-
-        public PatientController(PatientManager patientManagerr)
+        private readonly IConfiguration _configuration;
+        
+        public PatientController(PatientManager patientManager, IConfiguration configuration)
         {
-            _patientManager = patientManagerr;
+            _patientManager = patientManager;
+            _configuration = configuration;
         }
 
         // GET: api/<PatientController>
         [HttpGet]
         public List<Patient> Get()
         {
+            StreamWriter writer = new StreamWriter(_configuration["PatientsFilePath"]);
+            
+            foreach (Patient patient in _patientManager.GetPatients())
+            {
+                writer.WriteLine($"{patient.Name},{patient.Lastname},{patient.CI}");
+            }
+            writer.Close();
+        
             return _patientManager.GetPatients();
         }
 
         // GET api/<PatientController>/5
         [HttpGet("{CI}")]
-        public Patient Get(int CI)
+        public Patient GetByCI(int CI)
         {
             return _patientManager.GetPatientByCI(CI);
         }
